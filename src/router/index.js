@@ -8,6 +8,7 @@ import Index from "../views/Index";
 import UpdateMovie from "../views/UpdateMovie";
 import Recommend from "../views/Recommend";
 import SmallView from "../views/SmallView";
+import Search from "../views/Search";
 
 Vue.use(VueRouter)
 
@@ -57,8 +58,14 @@ Vue.use(VueRouter)
         },
         {
           path: "/SmallView",
-          name: "搜索",
+          name: "电影列表",
           component: SmallView,
+          show: true
+        },
+        {
+          path: "/Search",
+          name: "搜索",
+          component: Search,
           show: true
         },
         {
