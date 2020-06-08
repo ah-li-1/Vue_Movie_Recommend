@@ -9,6 +9,7 @@ import UpdateMovie from "../views/UpdateMovie";
 import Recommend from "../views/Recommend";
 import SmallView from "../views/SmallView";
 import Search from "../views/Search";
+import Details from "../views/Details";
 
 Vue.use(VueRouter)
 
@@ -67,6 +68,12 @@ Vue.use(VueRouter)
           name: "搜索",
           component: Search,
           show: true
+        },
+        {
+          path: "/Details",
+          name: "详情",
+          component: Details,
+          show: false
         },
         {
           path: '/UpdateMovie',

@@ -1,37 +1,28 @@
 <template>
     <div>
         <div id="searchData">
-                <el-form :inline="true">
-                    <el-form-item label="">
-                        <el-input v-model="param.name"  placeholder="片名/导演/演员/类型"></el-input>
-                    </el-form-item>
-                    <el-form-item >
-                        <div style="text-align:right">
-                            <el-button type="primary" @click="searchHandler">查询</el-button>
-                        </div>
-                    </el-form-item>
-                </el-form>
+            <el-form :inline="true">
+                <el-form-item label="">
+                    <el-input v-model="param.name" placeholder="片名/导演/演员/类型"></el-input>
+                </el-form-item>
+                <el-form-item>
+                    <div style="text-align:right">
+                        <el-button type="primary" @click="searchHandler">查询</el-button>
+                    </div>
+                </el-form-item>
+            </el-form>
 
         </div>
         <div id="dataShow">
-            <div class="in-movies-show-child">
-                <el-table :data="movies">
-                    <el-table-column><img src="../assets/p480747492.jpg" height="200"></el-table-column>
-                    <el-table-column prop="title" label="" id="title"></el-table-column>
-                    <el-table-column prop="star" label=""/>
-                    <el-table-column prop="director" label=""/>
-                    <el-table-column prop="actor" label=""/>
-                </el-table>
-<!--                <br>-->
-
-<!--                <div class="movieMsg">-->
-<!--                    <div class="posters"><img src="../assets/p480747492.jpg" height="200"></div>-->
-<!--                    <h2>肖申克的救赎</h2>-->
-<!--                    <star :score="9.5"></star>-->
-<!--                    <p>9.7分</p>-->
-<!--                    <p>导演:导演</p>-->
-<!--                    <p>主演:主演</p>-->
-<!--                </div>-->
+            <div class="in-movies-show-child" v-for="item in movies">
+                <div class="posters"><img src="../assets/p480747492.jpg" height="200"></div>
+                <div class="movieMsg">
+                    <p><a href="javascript:void(0)" @click="toDetails(item.id)">{{item.title}}</a></p>
+                    <star :score="item.star"></star>
+                    <p>{{'评分：'+item.star}}</p>
+                    <p>{{'导演：'+item.director}}</p>
+                    <p>{{'演员：'+item.actor}}</p>
+                </div>
             </div>
         </div>
     </div>
@@ -39,39 +30,49 @@
 
 <script>
     import star from '../star/star'
+
     export default {
-        data(){
-            return{
-                name:'分类管理',
-                movies:[],
-                centerDialogVisible: false ,
-                form:{},
-                sels:[],
-                param:{          //定义参数
-                    name:'',
-                    page:0,
-                    pageSize:5
+        data() {
+            return {
+                name: '分类管理',
+                movies: [],
+                centerDialogVisible: false,
+                form: {},
+                sels: [],
+                param: {          //定义参数
+                    name: '',
+                    page: 0,
+                    pageSize: 5
                 }
             }
         },
-        methods:{
-            searchHandler(){
+        methods: {
+            searchHandler() {
                 this.loadCategories();
             },
-            async loadCategories(){
+            async loadCategories() {
                 // let response=await axios.post('http://localhost:8181/movie/findAllByKey',this.param.name);
                 const _this = this;
-                axios.get('http://localhost:8181/movie/findAllByKey/'+ this.param.name).then(function (resp) {
+                axios.get('http://localhost:8181/movie/findAllByKey/' + this.param.name).then(function (resp) {
 
                     if (resp.data.length != 0) {
                         console.log(resp.data)
                         _this.movies = resp.data;
 
-                    }else {
-                        console.log("没有搜索到结果哦")
+                    } else {
+                        console.log("没有搜索到结果哦");
                     }
                 })
 
+            },
+            toDetails(id){
+                this.$router.push({
+                    path:'/details',
+                    query:{
+                        id:id
+                    }
+                });
+                console.log("跳转");
             }
         },
         components: {
@@ -86,14 +87,17 @@
         margin: 0;
         padding: 0;
     }
+
     h1 {
         text-align: center;
     }
+
     .in-movies-wrap {
         text-decoration: none;
         font-size: 0;
         padding: 0 100px;
     }
+
     .in-movies-show {
         background-color: #000000;
         padding: 10px 20px;
@@ -101,25 +105,35 @@
         cursor: pointer;
         font-size: 0;
     }
+
     .in-movies-show-child {
         display: flex;
         align-items: flex-end;
         padding-bottom: 10px;
         border-bottom: 1px solid #d6d6d6;
     }
+
     .in-movies-show p {
         font-size: 14px;
         color: #666;
     }
+
     .movieMsg {
         flex: 1;
         padding-left: 20px;
         vertical-align: top;
     }
-    #title {
+
+    h2 {
         font-size: 20px;
         font-weight: 500;
         margin-bottom: 10px;
-        color: #bd33fa
+        color: antiquewhite
+    }
+    p a{
+        font-size: 16px;
+        text-decoration:none;
+        padding-bottom: 0px;
+        padding-top: 0px;
     }
 </style>

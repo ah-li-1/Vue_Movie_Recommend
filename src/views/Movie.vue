@@ -49,7 +49,7 @@
         data(){
             return{
                 movies:[],
-                value: 3.7
+                value: ''
             }
         },
         created() {
