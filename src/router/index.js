@@ -7,9 +7,9 @@ import Modify from "../views/Modify";
 import Index from "../views/Index";
 import UpdateMovie from "../views/UpdateMovie";
 import Recommend from "../views/Recommend";
-import SmallView from "../views/SmallView";
 import Search from "../views/Search";
 import Details from "../views/Details";
+import TestVue from "../views/TestVue";
 
 Vue.use(VueRouter)
 
@@ -58,9 +58,9 @@ Vue.use(VueRouter)
           show: true
         },
         {
-          path: "/SmallView",
+          path: "/TestVue",
           name: "电影列表",
-          component: SmallView,
+          component: TestVue,
           show: true
         },
         {

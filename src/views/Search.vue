@@ -15,11 +15,12 @@
         </div>
         <div id="dataShow">
             <div class="in-movies-show-child" v-for="item in movies">
-                <div class="posters"><img src="../assets/p480747492.jpg" height="200"></div>
+                <div class="posters"><img src="../assets/p480747492.jpg" height="238"></div>
                 <div class="movieMsg">
-                    <p><a href="javascript:void(0)" @click="toDetails(item.id)">{{item.title}}</a></p>
+                    <p><a href="javascript:void(0)" @click="toDetails(item.id,item.title,item.type,item.director,item.actor,item.star,item.year)">{{item.title}}</a></p>
                     <star :score="item.star"></star>
                     <p>{{'评分：'+item.star}}</p>
+                    <p>{{'类型：'+item.type}}</p>
                     <p>{{'导演：'+item.director}}</p>
                     <p>{{'演员：'+item.actor}}</p>
                 </div>
@@ -55,8 +56,8 @@
                 const _this = this;
                 axios.get('http://localhost:8181/movie/findAllByKey/' + this.param.name).then(function (resp) {
 
-                    if (resp.data.length != 0) {
-                        console.log(resp.data)
+                    if (resp.data.length !== 0) {
+                        console.log(resp.data);
                         _this.movies = resp.data;
 
                     } else {
@@ -65,13 +66,8 @@
                 })
 
             },
-            toDetails(id){
-                this.$router.push({
-                    path:'/details',
-                    query:{
-                        id:id
-                    }
-                });
+            toDetails(id,title,type,director,actor,star,year){
+                this.$router.push({ name: '详情', params:{id:id,title:title,type:type,director:director,actor:actor,star:star,year:year}});
                 console.log("跳转");
             }
         },
