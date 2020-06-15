@@ -6,18 +6,17 @@
         <el-form-item label="密码" prop="password">
             <el-input type="password" v-model="ruleForm.password" autocomplete="off" style="width: 300px"></el-input>
         </el-form-item>
-        <el-form-item label="确认密码" prop="checkPass">
-            <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off" style="width: 300px"></el-input>
-        </el-form-item>
         <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">登陆</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
+            <el-button @click="toRegistration()">去注册</el-button>
         </el-form-item>
     </el-form>
 </template>
 
 <script>
     export default {
+        inject:["reload"],
         data() {
             const checkName = (rule, value, callback) => {
                 if (!value) {
@@ -41,21 +40,10 @@
                     callback();
                 }
             };
-            const validatePass2 = (rule, value, callback) => {
-                if (value === '' || value === undefined) {
-                    callback(new Error('请再次输入密码'));
-                } else if (value !== this.ruleForm.password) {
-                    callback(new Error('两次输入密码不一致!'));
-                } else {
-                    // console.log(value);
-                    callback();
-                }
-            };
             return {
                 ruleForm: {
                     name: this.$route.params.name,
-                    password: this.$route.params.password,
-                    checkPass: this.$route.params.password
+                    password: this.$route.params.password
                 },
                 rules:{
                     name: [
@@ -63,9 +51,6 @@
                     ],
                     password: [
                         { validator: validatePass, trigger: 'blur' }
-                    ],
-                    checkPass: [
-                        { validator: validatePass2, trigger: 'blur' }
                     ]
                 }
             };
@@ -86,7 +71,8 @@
                                 sessionStorage.setItem('user', _this.ruleForm.name);
                                 console.log("写入",sessionStorage.getItem('user'));
                                 _this.$router.push('/movie');
-                                window.location.reload();
+                                // window.location.reload();
+                                _this.reload();
                             }else {
                                 _this.$message({
                                     message: "登陆失败请检查用户名或密码",
@@ -102,6 +88,9 @@
             },
             resetForm(formName) {
                 this.$refs[formName].resetFields();
+            },
+            toRegistration(){
+                this.$router.push('/Registration');
             }
         }
     }

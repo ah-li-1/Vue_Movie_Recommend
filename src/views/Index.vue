@@ -15,7 +15,7 @@
                     <i class="el-icon-setting" style="margin-right: 15px"></i>
                     <el-dropdown-menu slot="dropdown">
                         <el-dropdown-item>查看信息</el-dropdown-item>
-                        <el-dropdown-item @click="delect">注销</el-dropdown-item>
+                        <el-dropdown-item @click.native="delect">注销</el-dropdown-item>
                     </el-dropdown-menu>
                 </el-dropdown>
                 <span>{{username}}</span>
@@ -27,6 +27,7 @@
 
 <script>
     export default {
+        inject:["reload"],
         data(){
             return{
                 username: sessionStorage.getItem('user')
@@ -34,14 +35,10 @@
         },
         methods:{
             delect() {
-                alert("123");
+                //alert("123");
                 this.username = sessionStorage.removeItem('user');
-                window.location.reload();
-            },
-            updateSession(){
-                let NewPage = "_empty" + "?time=" + new Date().getTime() / 500;
-                this.$router.push(NewPage);
-                this.$router.go(-1);
+                this.reload();
+                //window.location.reload();
             }
         }
     }

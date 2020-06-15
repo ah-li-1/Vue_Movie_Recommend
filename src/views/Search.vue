@@ -61,12 +61,18 @@
                         _this.movies = resp.data;
 
                     } else {
-                        console.log("没有搜索到结果哦");
+                        //console.log("没有搜索到结果哦");
+                        _this.$message({
+                            showClose: true,
+                            message: '没有搜索到结果哦，请尝试其他关键字',
+                            type: 'warning'
+                        });
                     }
                 })
 
             },
             toDetails(id,title,type,director,actor,star,year){
+                sessionStorage.setItem("mId",id);
                 this.$router.push({ name: '详情', params:{id:id,title:title,type:type,director:director,actor:actor,star:star,year:year}});
                 console.log("跳转");
             }

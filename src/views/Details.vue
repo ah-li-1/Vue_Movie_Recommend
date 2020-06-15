@@ -4,15 +4,15 @@
             <div id="dataShow">
                 <div class="in-movies-show-child">
                     <div class="posters"><img src="../assets/p480747492.jpg" height="238"></div>
-                    <div class="movieMsg">
+                    <div class="movieMsg" >
                         <h1>
-                            <span id="title">{{title}}</span>
+                            <span id="title">{{movieItem.title}}</span>
                         </h1>
-                        <star :score="star"></star>
-                        <p>{{'评分：'+star}}</p>
-                        <p>{{'类型：'+type}}</p>
-                        <p>{{'导演：'+director}}</p>
-                        <p>{{'演员：'+actor}}</p>
+                        <star :score="movieItem.star"></star>
+                        <p>{{'评分：'+movieItem.star}}</p>
+                        <p>{{'类型：'+movieItem.type}}</p>
+                        <p>{{'导演：'+movieItem.director}}</p>
+                        <p>{{'演员：'+movieItem.actor}}</p>
                     </div>
                 </div>
             </div>
@@ -20,7 +20,7 @@
             <div id="comment">
                 <div>
                     <p style="border: 1px solid #B3C0D1">
-                        <span style="width: 300px; float: left;">{{title+'的评论(共111条)'}}</span>
+                        <span style="width: 300px; float: left;">{{movieItem.title+'的评论(共111条)'}}</span>
                         <el-button type="primary" icon="el-icon-edit" @click="handleCreate()">写评论</el-button>
                     </p>
                 </div>
@@ -64,15 +64,10 @@
 
     export default {
         name: "Details",
+        inject:["reload"],
         data() {
             return {
-                id: this.$route.params.id,
-                title: this.$route.params.title,
-                type: this.$route.params.type,
-                director: this.$route.params.director,
-                actor: this.$route.params.actor,
-                star: this.$route.params.star,
-                year: this.$route.params.year,
+                movieItem:[],
                 comment: [],
                 dialogFormVisible: false,
                 loading: false,
@@ -99,9 +94,20 @@
 
         },
         created() {
-            axios.get('http://localhost:8181/comment/findAll/')
+
+            axios.get('http://localhost:8181/movie/findById/'+sessionStorage.getItem("mId"))
                 .then(res => {
-                    console.log('数据是:', res);
+                    this.movieItem = res.data;
+                    //console.log('数据是:', res);
+                    //this.comment = res.data;
+                })
+                .catch((e) => {
+                    console.log('获取数据失败');
+                });
+
+            axios.get('http://localhost:8181/comment/finAllByMid/'+sessionStorage.getItem("mId"))
+                .then(res => {
+                    //console.log('数据是:', res);
                     this.comment = res.data;
                 })
                 .catch((e) => {
@@ -112,6 +118,10 @@
             //重置dialog内的输入内容与关闭dialog
             resetForm() {
                 this.form = {};
+            },
+            getDate(){
+                var d = new Date();
+                return (d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate())
             },
             //点击创建dialog
             handleCreate() {
@@ -124,22 +134,36 @@
                 this.resetForm();
             },
             submitComment() {
-                //console.log(this.form.name);
-                if (sessionStorage.getItem('user') !== null) {
-                    axios.post('http://localhost:8181/comment/save/', {
-                        text: this.form.text,
-                        username: sessionStorage.getItem('user'),
-                        date: "2020-2-2"
-                    })
-                        .then(res => {
-                            console.log('数据是:', res);
-                            // this.comment = res.data;
+                //console.log(this.form.text);
+                if(this.form.text !== undefined){
+                    // 判断是否已经登陆，未登录令其跳转至登陆界面
+                    if (sessionStorage.getItem('user') !== null) {
+                        axios.post('http://localhost:8181/comment/save/', {
+                            text: this.form.text,
+                            username: sessionStorage.getItem('user'),
+                            date: this.getDate(),
+                            mid:sessionStorage.getItem("mId")
                         })
-                        .catch((e) => {
-                            console.log('获取数据失败');
-                        });
-                }else {
-                    this.$router.push("Login");
+                            .then(res => {
+                                //console.log('数据是:', res.data);
+                                if (res.data === 1) {
+                                    this.$message({
+                                        showClose: true,
+                                        message: '评论成功',
+                                        type: 'success'
+                                    });
+                                    this.reload();
+                                }
+                                // this.comment = res.data;
+                            })
+                            .catch((e) => {
+                                console.log('获取数据失败');
+                            });
+                    } else {
+                        this.$router.push("Login");
+                    }
+                }else{
+                    this.$message.error('请输入内容哦');
                 }
                 this.resetForm();
                 this.dialogFormVisible = false;
